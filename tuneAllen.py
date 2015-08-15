@@ -20,17 +20,17 @@ if __name__ == '__main__':
     if '-one' in sys.argv:
         
         simulator  = 'jNeuroML_NEURON'
-        #simulator  = 'jNeuroML'
+        simulator  = 'jNeuroML'
         
         cont = NeuroMLController('AllenTest', 
-                                 'models/AllenTest.net.nml',
-                                 'network_Pyrish',
+                                 'models/RS/AllenTest.net.nml',
+                                 'network_RS',
                                  1500, 
                                  0.01, 
                                  simulator)
                                  
-        sim_vars = OrderedDict([('cell:Pyrish/channelDensity:Gran_NaF_98_all/mS_per_cm2', 55),
-                                ('cell:Pyrish/channelDensity:Gran_KDr_98_all/mS_per_cm2', 20)])
+        sim_vars = OrderedDict([('cell:RS/channelDensity:Na_all/mS_per_cm2', 55),
+                                ('cell:RS/channelDensity:Kd_all/mS_per_cm2', 20)])
                                 
                                  
         t, v = cont.run_individual(sim_vars, show=(not nogui))
@@ -38,18 +38,17 @@ if __name__ == '__main__':
     else:
         
 
-        parameters = ['cell:Pyrish/channelDensity:Gran_NaF_98_all/mS_per_cm2',
-                      'cell:Pyrish/channelDensity:Gran_KDr_98_all/mS_per_cm2',
-                      'cell:Pyrish/channelDensity:Gran_H_98_all/mS_per_cm2',
-                      'cell:Pyrish/channelDensity:Gran_CaHVA_98_all/mS_per_cm2',
-                      'cell:Pyrish/channelDensity:GranPassiveCond_all/mS_per_cm2']
+        parameters = ['cell:RS/channelDensity:Na_all/mS_per_cm2',
+                      'cell:RS/channelDensity:Kd_all/mS_per_cm2',
+                      'cell:RS/channelDensity:IM_all/mS_per_cm2',
+                      'cell:RS/channelDensity:LeakConductance_all/mS_per_cm2']
 
         #above parameters will not be modified outside these bounds:
         min_constraints = [20,   1,   0, 0, 0]
         max_constraints = [80,  30,  2, 1.5, .3]
 
 
-        ref = 'Pop0/0/Pyrish/v:'
+        ref = 'Pop0/0/RS/v:'
         average_maximum = ref+'average_maximum'
         average_minimum = ref+'average_minimum'
         mean_spike_frequency = ref+'mean_spike_frequency'
@@ -70,7 +69,7 @@ if __name__ == '__main__':
 
         run_optimisation('AllenTest', 
                          'models/AllenTest.net.nml',
-                         'network_Pyrish',
+                         'network_RS',
                          parameters,
                          max_constraints,
                          min_constraints,
