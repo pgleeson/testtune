@@ -29,8 +29,8 @@ if __name__ == '__main__':
                                  0.01, 
                                  simulator)
                                  
-        sim_vars = OrderedDict([('cell:RS/channelDensity:Na_all/mS_per_cm2', 55),
-                                ('cell:RS/channelDensity:Kd_all/mS_per_cm2', 20)])
+        sim_vars = OrderedDict([('cell:RS/channelDensity:Na_all/mS_per_cm2', 50),
+                                ('cell:RS/channelDensity:Kd_all/mS_per_cm2', 5)])
                                 
                                  
         t, v = cont.run_individual(sim_vars, show=(not nogui))
@@ -44,8 +44,8 @@ if __name__ == '__main__':
                       'cell:RS/channelDensity:LeakConductance_all/mS_per_cm2']
 
         #above parameters will not be modified outside these bounds:
-        min_constraints = [20,   1,   0, 0, 0]
-        max_constraints = [80,  30,  2, 1.5, .3]
+        min_constraints = [20,   1,    0,  0]
+        max_constraints = [80,  30,   1,  0.5]
 
 
         ref = 'Pop0/0/RS/v:'
@@ -68,7 +68,7 @@ if __name__ == '__main__':
         #simulator  = 'jNeuroML'
 
         run_optimisation('AllenTest', 
-                         'models/AllenTest.net.nml',
+                         'models/RS/AllenTest.net.nml',
                          'network_RS',
                          parameters,
                          max_constraints,
@@ -78,11 +78,11 @@ if __name__ == '__main__':
                          sim_time = 1500,
                          dt = 0.01,
                          seed = 1234,
-                         population_size =  20,
-                         max_evaluations =  150,
+                         population_size =  40,
+                         max_evaluations =  400,
                          num_selected =     10,
-                         num_offspring =    10,
-                         mutation_rate =    0.5,
+                         num_offspring =    8,
+                         mutation_rate =    0.9,
                          num_elites =       1,
                          simulator =        simulator,
                          nogui =            nogui)
