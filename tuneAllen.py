@@ -20,7 +20,7 @@ if __name__ == '__main__':
     if '-one' in sys.argv:
         
         simulator  = 'jNeuroML_NEURON'
-        simulator  = 'jNeuroML'
+        #simulator  = 'jNeuroML'
         
         cont = NeuroMLController('AllenTest', 
                                  'models/RS/AllenTest.net.nml',
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                                  0.01, 
                                  simulator)
                                  
-        sim_vars = OrderedDict([('cell:RS/channelDensity:Na_all/mS_per_cm2', 50),
+        sim_vars = OrderedDict([('cell:RS/channelDensity:Na_all/mS_per_cm2', 100),
                                 ('cell:RS/channelDensity:Kd_all/mS_per_cm2', 5)])
                                 
                                  
@@ -76,11 +76,11 @@ if __name__ == '__main__':
                          weights,
                          target_data,
                          sim_time = 1500,
-                         dt = 0.01,
+                         dt = 0.025,
                          seed = 1234,
-                         population_size =  40,
-                         max_evaluations =  400,
-                         num_selected =     10,
+                         population_size =  10,
+                         max_evaluations =  40,
+                         num_selected =     5,
                          num_offspring =    8,
                          mutation_rate =    0.9,
                          num_elites =       1,
