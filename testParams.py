@@ -65,7 +65,7 @@ if __name__ == '__main__':
     num_elites =       1
     seed =             1234
     
-    nogui =            False
+    nogui =            True
     verbose =          True
 
     simulator  = 'jNeuroML_NEURON'
@@ -77,8 +77,8 @@ if __name__ == '__main__':
                                      to_command_line_arg(parameters),
                                      to_command_line_arg(max_constraints),
                                      to_command_line_arg(min_constraints),
-                                     to_command_line_arg(weights),
                                      to_command_line_arg(target_data),
+                                     to_command_line_arg(weights),
                                      sim_time,
                                      dt,
                                      population_size,
@@ -92,7 +92,6 @@ if __name__ == '__main__':
                                      '-verbose' if verbose else '',
                                      '-nogui' if nogui else '')
     
-    print(command)
     
     run_remotely(command, 'testGrc', '/home/ucgbpgl/git/testtune')
                      

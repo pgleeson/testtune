@@ -1,1 +1,1 @@
-mv  log* NT_* old
+mv submit_* log* NT_* old
