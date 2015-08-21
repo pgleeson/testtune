@@ -61,18 +61,18 @@ def run_one_optimisation(ref,
                      num_offspring,
                      mutation_rate,
                      num_elites)           
-    
-    run_optimisation(ref, 
-                     'models/RS/AllenTest.net.nml',
-                     'network_RS',
-                     parameters,
-                     max_constraints,
-                     min_constraints,
-                     weights,
-                     target_data,
-                     sim_time = 1500,
-                     dt = 0.025,
-                     seed = seed,
+
+    run_optimisation(prefix =           ref, 
+                     neuroml_file =     'models/RS/AllenTest.net.nml',
+                     target =           'network_RS',
+                     parameters =       parameters,
+                     max_constraints =  max_constraints,
+                     min_constraints =  min_constraints,
+                     weights =          weights,
+                     target_data =      target_data,
+                     sim_time =         1500,
+                     dt =               0.025,
+                     seed =             seed,
                      population_size =  population_size,
                      max_evaluations =  max_evaluations,
                      num_selected =     num_selected,
@@ -108,6 +108,7 @@ if __name__ == '__main__':
     if '-test' in sys.argv:
 
         run_one_optimisation('A',
+                            1234,
                             population_size =  10,
                             max_evaluations =  40,
                             num_selected =     5,
@@ -120,6 +121,7 @@ if __name__ == '__main__':
     else:
         
         run_one_optimisation('AllenTest',
+                            1234,
                             population_size =  10,
                             max_evaluations =  40,
                             num_selected =     5,
