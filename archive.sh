@@ -1,1 +1,1 @@
-mv NT_* old
+mv  log* NT_* old
