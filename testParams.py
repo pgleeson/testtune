@@ -25,7 +25,6 @@ def to_command_line_arg(arg):
 
 if __name__ == '__main__':
     
-    prefix =           'TestGran'
     neuroml_file =     'models/GranuleCell.net.nml'
     target =           'network_GranuleCell'
 
@@ -57,54 +56,59 @@ if __name__ == '__main__':
                    
     sim_time =         700
     dt =               0.01
-    population_size =  20
-    max_evaluations =  100
-    num_selected =     10
-    num_offspring =    8
+    #population_size =  40
+    max_evaluations =  400
+    num_selected =     20
+    num_offspring =    15
     
     num_elites =       1
     
     nogui =            True
     verbose =          True
 
+    prefix =           'TPop'
     simulator  = 'jNeuroML_NEURON'
     #simulator  = 'jNeuroML'
     
     muts = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
+    muts = [0.1,0.9]
+    
+    population_sizes = [30,50,70,100]
     
     seeds = [123,345,456,678,890]
     
     count = 0
     for seed in seeds:
         for mut in muts:
+            for population_size in population_sizes:
 
-            prefix_ = 'm%s_s%s_%s'%(mut,seed,prefix)
-            command = 'pynml-tune  %s  %s  %s  %s  %s  %s  %s  %s -simTime %s -dt %s -populationSize %s -maxEvaluations %s -numSelected %s -numOffspring %s -mutationRate %s -numElites %s -seed %s -simulator %s %s %s'%(prefix_,
-                                             neuroml_file,
-                                             target,
-                                             to_command_line_arg(parameters),
-                                             to_command_line_arg(max_constraints),
-                                             to_command_line_arg(min_constraints),
-                                             to_command_line_arg(target_data),
-                                             to_command_line_arg(weights),
-                                             sim_time,
-                                             dt,
-                                             population_size,
-                                             max_evaluations,
-                                             num_selected,
-                                             num_offspring,
-                                             mut,
-                                             num_elites,
-                                             seed,
-                                             simulator,
-                                             '-verbose' if verbose else '',
-                                             '-nogui' if nogui else '')
+                prefix_ = 'p%s_m%s_s%s_%s'%(population_size,mut,seed,prefix)
+                command = 'pynml-tune  %s  %s  %s  %s  %s  %s  %s  %s -simTime %s -dt %s -populationSize %s -maxEvaluations %s -numSelected %s -numOffspring %s -mutationRate %s -numElites %s -seed %s -simulator %s %s %s'%(prefix_,
+                                                 neuroml_file,
+                                                 target,
+                                                 to_command_line_arg(parameters),
+                                                 to_command_line_arg(max_constraints),
+                                                 to_command_line_arg(min_constraints),
+                                                 to_command_line_arg(target_data),
+                                                 to_command_line_arg(weights),
+                                                 sim_time,
+                                                 dt,
+                                                 population_size,
+                                                 max_evaluations,
+                                                 num_selected,
+                                                 num_offspring,
+                                                 mut,
+                                                 num_elites,
+                                                 seed,
+                                                 simulator,
+                                                 '-verbose' if verbose else '',
+                                                 '-nogui' if nogui else '')
 
-            print('-----------------------------------------')
-            print(command)
-            run_remotely(command, prefix_, '/home/ucgbpgl/git/testtune')
-            
-            count+=1
+                print('-----------------------------------------')
+                print(command)
+                run_remotely(command, prefix_, '/home/ucgbpgl/git/testtune')
+
+                count+=1
             
     print("\nSet running %i simulations\n"%count)
                      

@@ -34,6 +34,7 @@ for ref in refs:
     print('Reading info from %s'%report)
     rep_str = open(report).read().replace('\'','"')
     data = json.loads(rep_str)
+    print('    %s'%data['comment'])
 
     info[ref] = data
     
@@ -41,12 +42,18 @@ for ref in refs:
 
 muts = []
 fitnesses = []
+pop_sizes = []
+max_evals = []
 
 for ref in refs:
     data = info[ref]
     fitnesses.append(float(data['fitness']))
     muts.append(float(data['mutation_rate']))
+    pop_sizes.append(int(data['population_size']))
+    max_evals.append(int(data['max_evaluations']))
     
 plot_it(muts, fitnesses, 'Mutation rate', 'Fitness', 'ko')
+plot_it(pop_sizes, fitnesses, 'Population size', 'Fitness', 'ko')
+plot_it(max_evals, fitnesses, 'Max evaluations', 'Fitness', 'ko')
     
 pylab.show()
