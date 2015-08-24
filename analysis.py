@@ -1,3 +1,4 @@
+import os.path
 import os
 import json
 import pprint
@@ -32,11 +33,14 @@ info = {}
 for ref in refs:
     report = ref+'/report.json'
     print('Reading info from %s'%report)
-    rep_str = open(report).read().replace('\'','"')
-    data = json.loads(rep_str)
-    print('    %s'%data['comment'])
-
-    info[ref] = data
+    if os.path.isfile(report):
+        rep_str = open(report).read().replace('\'','"')
+        data = json.loads(rep_str)
+        print('    %s'%data['comment'])
+        info[ref] = data
+    else:
+        
+        print('***** Missing report: %s'%report)
     
 #pp.pprint(info)
 
@@ -45,7 +49,7 @@ fitnesses = []
 pop_sizes = []
 max_evals = []
 
-for ref in refs:
+for ref in info.keys():
     data = info[ref]
     fitnesses.append(float(data['fitness']))
     muts.append(float(data['mutation_rate']))
