@@ -17,11 +17,13 @@ parameters = ['cell:RS/channelDensity:Na_all/mS_per_cm2',
               'cell:RS/channelDensity:Kd_all/mS_per_cm2',
               'cell:RS/channelDensity:IM_all/mS_per_cm2',
               'cell:RS/channelDensity:LeakConductance_all/mS_per_cm2',
-              'cell:RS/erev_id:LeakConductance_all/mV']
+              'cell:RS/erev_id:LeakConductance_all/mV',
+              'cell:RS/erev_id:Na_all/mV',
+              'cell:RS/erev_id:Kd_all/mV']
 
 #above parameters will not be modified outside these bounds:
-min_constraints = [20,   1,    0,  1e-5, -100]
-max_constraints = [80,  30,   1,  0.5, -80]
+min_constraints = [20,   1,    1e-6,  1e-6, -100, 50, -100]
+max_constraints = [100,  30,   4,     0.1,  -70,  60,  -70]
 
 
 ref = 'Pop0/0/RS/v:'
@@ -131,12 +133,12 @@ if __name__ == '__main__':
         
         run_one_optimisation('AllenTest',
                             1234,
-                            population_size =  40,
+                            population_size =  30,
                             max_evaluations =  200,
-                            num_selected =     15,
-                            num_offspring =    10,
+                            num_selected =     20,
+                            num_offspring =    15,
                             mutation_rate =    0.1,
-                            num_elites =       2,
+                            num_elites =       3,
                             simulator =        simulator,
                             nogui =            nogui)
         
