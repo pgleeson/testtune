@@ -16,11 +16,12 @@ from collections import OrderedDict
 parameters = ['cell:RS/channelDensity:Na_all/mS_per_cm2',
               'cell:RS/channelDensity:Kd_all/mS_per_cm2',
               'cell:RS/channelDensity:IM_all/mS_per_cm2',
-              'cell:RS/channelDensity:LeakConductance_all/mS_per_cm2']
+              'cell:RS/channelDensity:LeakConductance_all/mS_per_cm2',
+              'cell:RS/erev_id:LeakConductance_all/mV']
 
 #above parameters will not be modified outside these bounds:
-min_constraints = [20,   1,    0,  0]
-max_constraints = [80,  30,   1,  0.5]
+min_constraints = [20,   1,    0,  1e-5, -100]
+max_constraints = [80,  30,   1,  0.5, -80]
 
 
 ref = 'Pop0/0/RS/v:'
@@ -28,16 +29,19 @@ average_maximum = ref+'average_maximum'
 average_minimum = ref+'average_minimum'
 mean_spike_frequency = ref+'mean_spike_frequency'
 first_spike_time = ref+'first_spike_time'
+average_last_1percent = ref+'average_last_1percent'
 
 weights = {average_maximum: 1,
            average_minimum: 1,
            mean_spike_frequency: 1,
-           first_spike_time: 1}
+           first_spike_time: 1,
+           average_last_1percent: 1}
 
 target_data = {average_maximum: 33.320915,
                average_minimum: -44.285,
                mean_spike_frequency: 26.6826,
-               first_spike_time: 226}
+               first_spike_time: 226,
+               average_last_1percent: -80}
 
 simulator  = 'jNeuroML_NEURON'
 #simulator  = 'jNeuroML'
@@ -98,19 +102,24 @@ if __name__ == '__main__':
                                  0.01, 
                                  simulator)
                                  
-        sim_vars = OrderedDict([('cell:RS/channelDensity:Na_all/mS_per_cm2', 100),
-                                ('cell:RS/channelDensity:Kd_all/mS_per_cm2', 5)])
+        example_vars = {'cell:RS/channelDensity:IM_all/mS_per_cm2': 0.7724432400416816,
+                            'cell:RS/channelDensity:Kd_all/mS_per_cm2': 4.643108211145454,
+                            'cell:RS/channelDensity:LeakConductance_all/mS_per_cm2': 0.007883588106567089,
+                            'cell:RS/channelDensity:Na_all/mS_per_cm2': 44.05565568387002,
+                            'cell:RS/erev_id:LeakConductance_all/mV': -95.25485559729064}
+
+        sim_vars = OrderedDict(example_vars)
                                 
                                  
         t, v = cont.run_individual(sim_vars, show=(not nogui))
         
         
-    if '-test' in sys.argv:
+    elif '-quick' in sys.argv:
 
-        run_one_optimisation('A',
+        run_one_optimisation('AllenTestQ',
                             1234,
                             population_size =  10,
-                            max_evaluations =  40,
+                            max_evaluations =  20,
                             num_selected =     5,
                             num_offspring =    8,
                             mutation_rate =    0.9,
@@ -122,12 +131,12 @@ if __name__ == '__main__':
         
         run_one_optimisation('AllenTest',
                             1234,
-                            population_size =  10,
-                            max_evaluations =  40,
-                            num_selected =     5,
-                            num_offspring =    8,
-                            mutation_rate =    0.9,
-                            num_elites =       1,
+                            population_size =  40,
+                            max_evaluations =  200,
+                            num_selected =     15,
+                            num_offspring =    10,
+                            mutation_rate =    0.1,
+                            num_elites =       2,
                             simulator =        simulator,
                             nogui =            nogui)
         

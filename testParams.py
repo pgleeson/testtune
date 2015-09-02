@@ -66,7 +66,6 @@ if __name__ == '__main__':
     nogui =            True
     verbose =          True
 
-    prefix =           'TPop'
     simulator  = 'jNeuroML_NEURON'
     #simulator  = 'jNeuroML'
     
@@ -76,6 +75,8 @@ if __name__ == '__main__':
     population_sizes = [30,50,70,100]
     
     seeds = [123,345,456,678,890]
+    
+    prefix =           'TestPopSize'
     
     count = 0
     for seed in seeds:
@@ -106,7 +107,7 @@ if __name__ == '__main__':
 
                 print('-----------------------------------------')
                 print(command)
-                run_remotely(command, prefix_, '/home/ucgbpgl/git/testtune')
+                run_remotely(command, prefix_, '/home/ucgbpgl/git/testtune', runtime='03:00:00')
 
                 count+=1
             

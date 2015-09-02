@@ -65,9 +65,11 @@ def run_remotely(command, task, remote_dir, runtime='01:00:00', submit_helper=uc
     tmp_script.write(contents)
     tmp_script.close()
     
+    '''
     print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     print(contents)
-    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")'''
+    
     
     scp_cmd = 'scp "%s" "%s@%s:%s"' % (tmp_script_name, submit_helper.username, submit_helper.host, remote_dir)
     print execute_command_in_dir(scp_cmd, '.', True)
