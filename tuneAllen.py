@@ -159,12 +159,12 @@ if __name__ == '__main__':
         simulator  = 'jNeuroML'
         
         run_one_optimisation('AllenIzh',
-                            1234,
+                            12345,
                             population_size =  40,
-                            max_evaluations =  300,
+                            max_evaluations =  600,
                             num_selected =     20,
                             num_offspring =    15,
-                            mutation_rate =    0.2,
+                            mutation_rate =    0.9,
                             num_elites =       3,
                             simulator =        simulator,
                             nogui =            nogui,
