@@ -6,22 +6,8 @@
 
 '''
 
-from RemoteRun import run_remotely
+from RemoteRun import run_remotely, to_command_line_arg
 
-def to_command_line_arg(arg):
-    
-    if isinstance(arg, list):
-        ret = '['
-        for a in arg:
-            ret+='%s,'%a
-        return ret[:-1]+']'
-    elif isinstance(arg, dict):
-        ret = '['
-        for k in arg.keys():
-            ret+='%s:%s,'%(k,arg[k])
-        return ret[:-1]+']'
-    else:
-        return '???'
 
 if __name__ == '__main__':
     

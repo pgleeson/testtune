@@ -45,6 +45,22 @@ echo "Done {{ task }}!"
     
 uclClusterSubmit = SubmitHelper('ucgbpgl', 'pryor.cs.ucl.ac.uk')
 
+
+def to_command_line_arg(arg):
+    
+    if isinstance(arg, list):
+        ret = '['
+        for a in arg:
+            ret+='%s,'%a
+        return ret[:-1]+']'
+    elif isinstance(arg, dict):
+        ret = '['
+        for k in arg.keys():
+            ret+='%s:%s,'%(k,arg[k])
+        return ret[:-1]+']'
+    else:
+        return '???'
+
 def run_remotely(command, task, remote_dir, runtime='01:00:00', submit_helper=uclClusterSubmit):
 
     variables = {}

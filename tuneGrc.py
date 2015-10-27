@@ -14,11 +14,59 @@ from collections import OrderedDict
 
 from pyelectro import utils
 
+from RemoteRun import run_remotely, to_command_line_arg
 
-sim_time =         700
-dt =               0.005
 
 if __name__ == '__main__':
+
+
+    sim_time =         700
+    dt =               0.01
+
+    prefix =           'TestGran'
+    neuroml_file =     'models/GranuleCell.net.nml'
+    target =           'network_GranuleCell'
+
+    simulator  = 'jNeuroML_NEURON'
+    #simulator  = 'jNeuroML'
+
+    population_size =  5
+    max_evaluations =  20
+    num_selected =     10
+    num_offspring =    8
+    mutation_rate =    0.5
+    num_elites =       1
+
+    seed = 1234
+    verbose = False
+    
+
+    parameters = ['cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2',
+                  'cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2',
+                  'cell:Granule_98/channelDensity:Gran_H_98_all/mS_per_cm2',
+                  'cell:Granule_98/channelDensity:GranPassiveCond_all/mS_per_cm2',
+                  'cell:Granule_98/specificCapacitance:all/uF_per_cm2']
+
+    #above parameters will not be modified outside these bounds:
+    min_constraints = [50,   6,   0,    0,   0.5]
+    max_constraints = [60,  15,   0.05, 0.1, 1.5]
+
+
+    ref = 'Gran/0/Granule_98/v:'
+    average_maximum = ref+'average_maximum'
+    average_minimum = ref+'average_minimum'
+    mean_spike_frequency = ref+'mean_spike_frequency'
+    first_spike_time = ref+'first_spike_time'
+
+    weights = {average_maximum: 1,
+               average_minimum: 1,
+               mean_spike_frequency: 1,
+               first_spike_time: 1}
+
+    target_data = {average_maximum: 15.3011,
+                   average_minimum: -70.066,
+                   mean_spike_frequency: 38.339,
+                   first_spike_time: 108.34}
     
     nogui = '-nogui' in sys.argv
     
@@ -35,7 +83,8 @@ if __name__ == '__main__':
                                  simulator)
                                  
         sim_vars = OrderedDict([('cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2', 55.7227),
-                                ('cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2', 8.89691)])
+                                ('cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2', 8.89691),
+                                ('cell:Granule_98/specificCapacitance:all/uF_per_cm2', 2)])
                                 
         
         t, v = cont.run_individual(sim_vars, show=False)
@@ -44,54 +93,55 @@ if __name__ == '__main__':
         
     else:
         
+        
+        if not '-remote' in sys.argv:
 
-        parameters = ['cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2',
-                      'cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2',
-                      'cell:Granule_98/channelDensity:Gran_H_98_all/mS_per_cm2',
-                      'cell:Granule_98/channelDensity:GranPassiveCond_all/mS_per_cm2']
+            run_optimisation(prefix =           prefix, 
+                             neuroml_file =     neuroml_file,
+                             target =           target,
+                             parameters =       parameters,
+                             max_constraints =  max_constraints,
+                             min_constraints =  min_constraints,
+                             weights =          weights,
+                             target_data =      target_data,
+                             sim_time =         sim_time,
+                             dt =               dt,
+                             population_size =  population_size,
+                             max_evaluations =  max_evaluations,
+                             num_selected =     num_selected,
+                             num_offspring =    num_offspring,
+                             mutation_rate =    mutation_rate,
+                             num_elites =       num_elites,
+                             simulator =        simulator,
+                             nogui =            nogui,
+                             seed =             seed)
+        else:
+            prefix_ = 'Grc_%s_e%s_m%s_s%s_%s'%(population_size,max_evaluations,mutation_rate,seed,prefix)
+                
+            command = 'pynml-tune  %s  %s  %s  %s  %s  %s  %s  %s -simTime %s -dt %s -populationSize %s -maxEvaluations %s -numSelected %s -numOffspring %s -mutationRate %s -numElites %s -seed %s -simulator %s %s %s'%(prefix_,
+                                                 neuroml_file,
+                                                 target,
+                                                 to_command_line_arg(parameters),
+                                                 to_command_line_arg(max_constraints),
+                                                 to_command_line_arg(min_constraints),
+                                                 to_command_line_arg(target_data),
+                                                 to_command_line_arg(weights),
+                                                 sim_time,
+                                                 dt,
+                                                 population_size,
+                                                 max_evaluations,
+                                                 num_selected,
+                                                 num_offspring,
+                                                 mutation_rate,
+                                                 num_elites,
+                                                 seed,
+                                                 simulator,
+                                                 '-verbose' if verbose else '',
+                                                 '-nogui' if nogui else '')
 
-        #above parameters will not be modified outside these bounds:
-        min_constraints = [40,   1,   0, 0]
-        max_constraints = [60,  20,   1, 0.3]
-
-
-        ref = 'Gran/0/Granule_98/v:'
-        average_maximum = ref+'average_maximum'
-        average_minimum = ref+'average_minimum'
-        mean_spike_frequency = ref+'mean_spike_frequency'
-        first_spike_time = ref+'first_spike_time'
-
-        weights = {average_maximum: 1,
-                   average_minimum: 1,
-                   mean_spike_frequency: 1,
-                   first_spike_time: 1}
-
-        target_data = {average_maximum: 15.3011,
-                       average_minimum: -70.066,
-                       mean_spike_frequency: 38.339,
-                       first_spike_time: 108.34}
-
-        simulator  = 'jNeuroML_NEURON'
-        #simulator  = 'jNeuroML'
-
-        run_optimisation(prefix =           'TestGran', 
-                         neuroml_file =     'models/GranuleCell.net.nml',
-                         target =           'network_GranuleCell',
-                         parameters =       parameters,
-                         max_constraints =  max_constraints,
-                         min_constraints =  min_constraints,
-                         weights =          weights,
-                         target_data =      target_data,
-                         sim_time =         sim_time,
-                         dt =               dt,
-                         population_size =  10,
-                         max_evaluations =  30,
-                         num_selected =     10,
-                         num_offspring =    8,
-                         mutation_rate =    0.5,
-                         num_elites =       1,
-                         simulator =        simulator,
-                         nogui =            nogui)
+            print('-----------------------------------------')
+            print(command)
+            run_remotely(command, prefix_, '/home/ucgbpgl/git/testtune', runtime='03:00:00')
 
 
 
