@@ -3,8 +3,8 @@
 #$ -S /bin/bash     # specify which shell to use
 #$ -cwd             # cd to current folder before executing the script
 
-#$ -o /home/ucgbpgl/git/testtune/logall    # redirect standard output
-#$ -e /home/ucgbpgl/git/testtune/logall    # redirect standard error
+#$ -o /home/ucgbpgl/git/testtune/log_$JOB_ID    # redirect standard output
+#$ -e /home/ucgbpgl/git/testtune/log_$JOB_ID    # redirect standard error
 #$ -j y
 
 #$ -l tmem=8G       # max memory limit
