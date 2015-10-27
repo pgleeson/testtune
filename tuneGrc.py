@@ -29,6 +29,7 @@ if __name__ == '__main__':
     #simulator  = 'jNeuroML'
 
     quick = True
+    quick = False
     
     if quick:
         population_size =  5
@@ -36,8 +37,8 @@ if __name__ == '__main__':
         num_selected =     10
         num_offspring =    8
     else:
-        population_size =  100
-        max_evaluations =  500
+        population_size =  50
+        max_evaluations =  300
         num_selected =     50
         num_offspring =    30
     
@@ -147,7 +148,7 @@ if __name__ == '__main__':
                                                  seed,
                                                  simulator,
                                                  '-verbose' if verbose else '',
-                                                 '-nogui' if nogui else '')
+                                                 '-nogui')
 
             print('-----------------------------------------')
             print(command)
