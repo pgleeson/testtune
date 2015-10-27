@@ -29,7 +29,7 @@ if __name__ == '__main__':
     #simulator  = 'jNeuroML'
 
     quick = True
-    quick = False
+    #quick = False
     
     if quick:
         population_size =  5
@@ -78,6 +78,15 @@ if __name__ == '__main__':
     
     nogui = '-nogui' in sys.argv
     
+    vars = {'cell:Granule_98/channelDensity:GranPassiveCond_all/mS_per_cm2': 0.03337471902862413,
+        'cell:Granule_98/channelDensity:Gran_H_98_all/mS_per_cm2': 0.03559929171361169,
+        'cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2': 7.016013314649269,
+        'cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2': 55.74495636439219,
+        'cell:Granule_98/specificCapacitance:all/uF_per_cm2': 1.0808061342038033}
+    
+    sim_vars = OrderedDict(vars)
+    sim_vars = OrderedDict([])
+    
     if '-one' in sys.argv:
         
         simulator  = 'jNeuroML_NEURON'
@@ -89,15 +98,52 @@ if __name__ == '__main__':
                                  sim_time, 
                                  dt, 
                                  simulator)
-                                 
-        sim_vars = OrderedDict([('cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2', 55.7227),
-                                ('cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2', 8.89691),
-                                ('cell:Granule_98/specificCapacitance:all/uF_per_cm2', 2)])
-                                
         
         t, v = cont.run_individual(sim_vars, show=False)
         
         analysis = utils.simple_iclamp_analysis(v['Gran/0/Granule_98/v'], t, plot=True)
+        
+    elif '-mone' in sys.argv:
+        
+        simulator  = 'jNeuroML_NEURON'
+        #simulator  = 'jNeuroML'
+        
+        cont = NeuroMLController('TestGranNet', 
+                                 'models/GranuleCellMulti.net.nml',
+                                 'network_GranuleCell_multi',
+                                 sim_time, 
+                                 dt, 
+                                 simulator)
+        
+        t, v = cont.run_individual(sim_vars, show=False)
+        
+        analysis = utils.simple_network_analysis(v, t, plot=True)
+        
+    elif '-mtune' in sys.argv:
+        
+        prefix =           'TestGranNet'
+        neuroml_file =     'models/GranuleCellMulti.net.nml'
+        target =           'network_GranuleCell_multi'
+        
+        run_optimisation(prefix =           prefix, 
+                         neuroml_file =     neuroml_file,
+                         target =           target,
+                         parameters =       parameters,
+                         max_constraints =  max_constraints,
+                         min_constraints =  min_constraints,
+                         weights =          weights,
+                         target_data =      target_data,
+                         sim_time =         sim_time,
+                         dt =               dt,
+                         population_size =  population_size,
+                         max_evaluations =  max_evaluations,
+                         num_selected =     num_selected,
+                         num_offspring =    num_offspring,
+                         mutation_rate =    mutation_rate,
+                         num_elites =       num_elites,
+                         simulator =        simulator,
+                         nogui =            nogui,
+                         seed =             seed)
         
     else:
         

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2  https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta3.xsd" 
+         id="network_GranuleCell_multi">
+
+
+    <include href="Gran_CaHVA_98.channel.nml"/>
+    <include href="Gran_CaPool_98.nml"/>
+    <include href="Gran_H_98.channel.nml"/>
+    <include href="Gran_KA_98.channel.nml"/>
+    <include href="Gran_KCa_98.channel.nml"/>
+    <include href="Gran_KDr_98.channel.nml"/>
+    <include href="Gran_NaF_98.channel.nml"/>
+    <include href="GranPassiveCond.channel.nml"/>
+    <include href="Granule_98.cell.nml"/>
+
+    <pulseGenerator id="Gran_10pA" delay="100.0ms" duration="500.0ms" amplitude="10 pA"/>
+    <pulseGenerator id="Gran_min2pA" delay="100.0ms" duration="500.0ms" amplitude="-2 pA"/>
+    <pulseGenerator id="Gran_min5pA" delay="100.0ms" duration="500.0ms" amplitude="-5 pA"/>
+
+    
+    <network id="network_GranuleCell_multi" type="networkWithTemperature" temperature="32.0 degC">
+
+        
+
+        <population id="Gran" component="Granule_98" type="populationList" size="3">
+            <instance id="0">
+                <location x="0" y="0" z="0.0"/>
+            </instance>
+            <instance id="1">
+                <location x="0" y="100" z="0.0"/>
+            </instance>
+            <instance id="2">
+                <location x="0" y="200" z="0.0"/>
+            </instance>
+        </population>
+
+
+
+            <!--There are no synaptic connections present in the network-->
+
+
+        <inputList id="Gran_10pA" component="Gran_10pA" population="Gran">
+            <input id="0" target="../Gran/0/Granule_98" destination="synapses"/>
+        </inputList>
+        <inputList id="Gran_min2pA" component="Gran_min2pA" population="Gran">
+            <input id="0" target="../Gran/1/Granule_98" destination="synapses"/>
+        </inputList>
+        <inputList id="Gran_min5pA" component="Gran_min5pA" population="Gran">
+            <input id="0" target="../Gran/2/Granule_98" destination="synapses"/>
+        </inputList>
+
+
+
+
+
+    </network>
+
+</neuroml>
