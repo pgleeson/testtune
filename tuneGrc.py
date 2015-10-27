@@ -14,11 +14,33 @@ from collections import OrderedDict
 
 from pyelectro import utils
 
+def plot_baseline_data():
+    
+    baseline = {}
+    file_name = 'TestGranNet.v.basedat'
+
+    cols = ['t', v.keys()[0], v.keys()[1], v.keys()[2]]
+
+    for c in cols:
+        baseline[c] = []
+
+    for line in open(file_name):
+        values = line.split()
+
+        for vi in range(len(values)):
+           baseline[cols[vi]].append(float(values[vi])*1000)
+
+    volts = {}
+    for k in baseline.keys():
+        if k!='t': 
+            volts[k]=baseline[k]
+
+    utils.simple_network_analysis(volts, baseline['t'], plot=True, show_plot_already=False)
 
 if __name__ == '__main__':
 
 
-    sim_time =         700
+    sim_time =         600
     dt =               0.01
 
     prefix =           'TestGran'
@@ -60,11 +82,11 @@ if __name__ == '__main__':
     max_constraints = [60,  15,   0.05, 0.1, 1.5]
 
 
-    ref = 'Gran/0/Granule_98/v:'
-    average_maximum = ref+'average_maximum'
-    average_minimum = ref+'average_minimum'
-    mean_spike_frequency = ref+'mean_spike_frequency'
-    first_spike_time = ref+'first_spike_time'
+    ref0 = 'Gran/0/Granule_98/v:'
+    average_maximum = ref0+'average_maximum'
+    average_minimum = ref0+'average_minimum'
+    mean_spike_frequency = ref0+'mean_spike_frequency'
+    first_spike_time = ref0+'first_spike_time'
 
     weights = {average_maximum: 1,
                average_minimum: 1,
@@ -85,7 +107,7 @@ if __name__ == '__main__':
         'cell:Granule_98/specificCapacitance:all/uF_per_cm2': 1.0808061342038033}
     
     sim_vars = OrderedDict(vars)
-    sim_vars = OrderedDict([])
+    #sim_vars = OrderedDict([])
     
     if '-one' in sys.argv:
         
@@ -117,13 +139,28 @@ if __name__ == '__main__':
         
         t, v = cont.run_individual(sim_vars, show=False)
         
+        plot_baseline_data()
+        
         analysis = utils.simple_network_analysis(v, t, plot=True)
+        
+        
         
     elif '-mtune' in sys.argv:
         
         prefix =           'TestGranNet'
         neuroml_file =     'models/GranuleCellMulti.net.nml'
         target =           'network_GranuleCell_multi'
+
+
+        parameters = ['cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2',
+                      'cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2',
+                      'cell:Granule_98/channelDensity:Gran_H_98_all/mS_per_cm2',
+                      'cell:Granule_98/channelDensity:GranPassiveCond_all/mS_per_cm2',
+                      'cell:Granule_98/specificCapacitance:all/uF_per_cm2']
+
+        #above parameters will not be modified outside these bounds:
+        min_constraints = [0,   0,   0,    0,   0.5]
+        max_constraints = [0,   0,   0.05, 0.1, 1.5]
         
         run_optimisation(prefix =           prefix, 
                          neuroml_file =     neuroml_file,
