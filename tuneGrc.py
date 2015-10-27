@@ -14,8 +14,6 @@ from collections import OrderedDict
 
 from pyelectro import utils
 
-from RemoteRun import run_remotely, to_command_line_arg
-
 
 if __name__ == '__main__':
 
@@ -30,10 +28,19 @@ if __name__ == '__main__':
     simulator  = 'jNeuroML_NEURON'
     #simulator  = 'jNeuroML'
 
-    population_size =  5
-    max_evaluations =  20
-    num_selected =     10
-    num_offspring =    8
+    quick = True
+    
+    if quick:
+        population_size =  5
+        max_evaluations =  20
+        num_selected =     10
+        num_offspring =    8
+    else:
+        population_size =  100
+        max_evaluations =  500
+        num_selected =     50
+        num_offspring =    30
+    
     mutation_rate =    0.5
     num_elites =       1
 
@@ -116,6 +123,9 @@ if __name__ == '__main__':
                              nogui =            nogui,
                              seed =             seed)
         else:
+            
+            from RemoteRun import run_remotely, to_command_line_arg
+
             prefix_ = 'Grc_%s_e%s_m%s_s%s_%s'%(population_size,max_evaluations,mutation_rate,seed,prefix)
                 
             command = 'pynml-tune  %s  %s  %s  %s  %s  %s  %s  %s -simTime %s -dt %s -populationSize %s -maxEvaluations %s -numSelected %s -numOffspring %s -mutationRate %s -numElites %s -seed %s -simulator %s %s %s'%(prefix_,
