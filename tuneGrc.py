@@ -15,6 +15,9 @@ from collections import OrderedDict
 from pyelectro import utils
 
 
+sim_time =         700
+dt =               0.005
+
 if __name__ == '__main__':
     
     nogui = '-nogui' in sys.argv
@@ -27,8 +30,8 @@ if __name__ == '__main__':
         cont = NeuroMLController('TestGran', 
                                  'models/GranuleCell.net.nml',
                                  'network_GranuleCell',
-                                 700, 
-                                 0.01, 
+                                 sim_time, 
+                                 dt, 
                                  simulator)
                                  
         sim_vars = OrderedDict([('cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2', 55.7227),
@@ -79,10 +82,10 @@ if __name__ == '__main__':
                          min_constraints =  min_constraints,
                          weights =          weights,
                          target_data =      target_data,
-                         sim_time =         700,
-                         dt =               0.01,
-                         population_size =  20,
-                         max_evaluations =  100,
+                         sim_time =         sim_time,
+                         dt =               dt,
+                         population_size =  10,
+                         max_evaluations =  30,
                          num_selected =     10,
                          num_offspring =    8,
                          mutation_rate =    0.5,

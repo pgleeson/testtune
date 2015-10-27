@@ -160,8 +160,8 @@ if __name__ == '__main__':
         
         run_one_optimisation('AllenIzh',
                             12345,
-                            population_size =  40,
-                            max_evaluations =  600,
+                            population_size =  10,
+                            max_evaluations =  60,
                             num_selected =     20,
                             num_offspring =    15,
                             mutation_rate =    0.9,
