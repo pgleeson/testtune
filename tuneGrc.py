@@ -188,10 +188,10 @@ if __name__ == '__main__':
         target =           'network_GranuleCell_multi'
         sim_time =         700
         
-        population_size =  5
-        max_evaluations =  10
-        num_selected =     3
-        num_offspring =    4
+        population_size =  20
+        max_evaluations =  20
+        num_selected =     5
+        num_offspring =    5
 
         parameters = ['cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2',
                       'cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2',
@@ -200,8 +200,8 @@ if __name__ == '__main__':
                       'cell:Granule_98/specificCapacitance:all/uF_per_cm2']
 
         #above parameters will not be modified outside these bounds:
-        min_constraints_pas = [0,   0,   0,    0,   0.5]
-        max_constraints_pas = [0,   0,   0.05, 0.1, 1.5]
+        min_constraints_pas = [0,   0,   0,    0.005,   0.5]
+        max_constraints_pas = [0,   0,   0.1,  0.1,     2]
         
         known_target_values = {'cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2':55.7227,
                                'cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2':8.89691,
@@ -231,7 +231,6 @@ if __name__ == '__main__':
                          seed =             seed,
                          known_target_values = known_target_values)
                          
-        print report
                          
         plot_baseline_data()
         
@@ -241,8 +240,8 @@ if __name__ == '__main__':
         gpas = report['fittest vars']['cell:Granule_98/channelDensity:GranPassiveCond_all/mS_per_cm2']
         sc = report['fittest vars']['cell:Granule_98/specificCapacitance:all/uF_per_cm2']
         
-        min_constraints = [50,   6, gh*(1-eps), gpas*(1-eps), sc*(1-eps)]
-        max_constraints = [60,  15, gh*(1+eps), gpas*(1+eps), sc*(1+eps)]
+        min_constraints = [40,   3, gh*(1-eps), gpas*(1-eps), sc*(1-eps)]
+        max_constraints = [80,  30, gh*(1+eps), gpas*(1+eps), sc*(1+eps)]
         
         
         report = run_optimisation(prefix = prefix, 
