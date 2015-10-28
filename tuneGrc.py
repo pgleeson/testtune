@@ -1,6 +1,6 @@
 '''
 
-    Still under developemnt!!
+    Still under development!!
 
     Subject to change without notice!!
 
@@ -14,12 +14,12 @@ from collections import OrderedDict
 
 from pyelectro import utils
 
-def plot_baseline_data():
+def plot_baseline_data(targets = None):
     
     baseline = {}
     file_name = 'TestGranNet.v.basedat'
 
-    cols = ['t', v.keys()[0], v.keys()[1], v.keys()[2]]
+    cols = ['t', 'Gran/0/Granule_98/v', 'Gran/1/Granule_98/v', 'Gran/2/Granule_98/v']
 
     for c in cols:
         baseline[c] = []
@@ -35,7 +35,11 @@ def plot_baseline_data():
         if k!='t': 
             volts[k]=baseline[k]
 
-    utils.simple_network_analysis(volts, baseline['t'], plot=True, show_plot_already=False)
+    utils.simple_network_analysis(volts, 
+                                  baseline['t'], 
+                                  targets = targets,
+                                  plot=True, 
+                                  show_plot_already=False)
 
 if __name__ == '__main__':
 
@@ -83,20 +87,45 @@ if __name__ == '__main__':
 
 
     ref0 = 'Gran/0/Granule_98/v:'
-    average_maximum = ref0+'average_maximum'
-    average_minimum = ref0+'average_minimum'
-    mean_spike_frequency = ref0+'mean_spike_frequency'
-    first_spike_time = ref0+'first_spike_time'
+    ref1 = 'Gran/1/Granule_98/v:'
+    ref2 = 'Gran/2/Granule_98/v:'
+    
+    average_maximum0 = ref0+'average_maximum'
+    average_minimum0 = ref0+'average_minimum'
+    mean_spike_frequency0 = ref0+'mean_spike_frequency'
+    first_spike_time0 = ref0+'first_spike_time'
+    
+    weights = {average_maximum0: 1,
+               average_minimum0: 1,
+               mean_spike_frequency0: 1,
+               first_spike_time0: 1}
 
-    weights = {average_maximum: 1,
-               average_minimum: 1,
-               mean_spike_frequency: 1,
-               first_spike_time: 1}
+    target_data = {average_maximum0: 15.3011,
+                   average_minimum0: -70.066,
+                   mean_spike_frequency0: 38.339,
+                   first_spike_time0: 108.34}
+                   
+                   
+    minimum_pas1 = ref1+'minimum'
+    value_110_pas1 = ref1+'value_110'
+    
+    minimum_pas2 = ref2+'minimum'
+    value_110_pas2 = ref2+'value_110'
+    value_400_pas2 = ref2+'value_400'
 
-    target_data = {average_maximum: 15.3011,
-                   average_minimum: -70.066,
-                   mean_spike_frequency: 38.339,
-                   first_spike_time: 108.34}
+    target_data_pas = {minimum_pas1: -71.39,
+                       value_110_pas1: -67.22,
+                       minimum_pas2: -84.97147,
+                       value_110_pas2: -74.36766,
+                       value_400_pas2: -80.15374}
+
+
+                       
+    weights_pas = {minimum_pas1: 1,
+                   value_110_pas1: 1,
+                   minimum_pas2: 1,
+                   value_110_pas2: 1,
+                   value_400_pas2: 1}
     
     nogui = '-nogui' in sys.argv
     
@@ -129,6 +158,7 @@ if __name__ == '__main__':
         
         simulator  = 'jNeuroML_NEURON'
         #simulator  = 'jNeuroML'
+        sim_time =         700
         
         cont = NeuroMLController('TestGranNet', 
                                  'models/GranuleCellMulti.net.nml',
@@ -139,18 +169,29 @@ if __name__ == '__main__':
         
         t, v = cont.run_individual(sim_vars, show=False)
         
-        plot_baseline_data()
+        plot_baseline_data(targets = target_data_pas.keys())
         
-        analysis = utils.simple_network_analysis(v, t, plot=True)
+        analysis = utils.simple_network_analysis(v, 
+                                                 t, 
+                                                 plot=True,
+                                                 targets = target_data_pas.keys())
         
         
         
     elif '-mtune' in sys.argv:
         
+        simulator  = 'jNeuroML'
+        simulator  = 'jNeuroML_NEURON'
+        
         prefix =           'TestGranNet'
         neuroml_file =     'models/GranuleCellMulti.net.nml'
         target =           'network_GranuleCell_multi'
-
+        sim_time =         700
+        
+        population_size =  5
+        max_evaluations =  10
+        num_selected =     3
+        num_offspring =    4
 
         parameters = ['cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2',
                       'cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2',
@@ -159,10 +200,52 @@ if __name__ == '__main__':
                       'cell:Granule_98/specificCapacitance:all/uF_per_cm2']
 
         #above parameters will not be modified outside these bounds:
-        min_constraints = [0,   0,   0,    0,   0.5]
-        max_constraints = [0,   0,   0.05, 0.1, 1.5]
+        min_constraints_pas = [0,   0,   0,    0,   0.5]
+        max_constraints_pas = [0,   0,   0.05, 0.1, 1.5]
         
-        run_optimisation(prefix =           prefix, 
+        known_target_values = {'cell:Granule_98/channelDensity:Gran_NaF_98_all/mS_per_cm2':55.7227,
+                               'cell:Granule_98/channelDensity:Gran_KDr_98_all/mS_per_cm2':8.89691,
+                               'cell:Granule_98/channelDensity:Gran_H_98_all/mS_per_cm2': 0.03090506,
+                               'cell:Granule_98/channelDensity:GranPassiveCond_all/mS_per_cm2': 0.0330033,
+                               'cell:Granule_98/specificCapacitance:all/uF_per_cm2': 1}
+        
+        report = run_optimisation(prefix = 'Pas_'+prefix, 
+                         neuroml_file =     neuroml_file,
+                         target =           target,
+                         parameters =       parameters,
+                         max_constraints =  max_constraints_pas,
+                         min_constraints =  min_constraints_pas,
+                         weights =          weights_pas,
+                         target_data =      target_data_pas,
+                         sim_time =         sim_time,
+                         dt =               dt,
+                         population_size =  population_size,
+                         max_evaluations =  max_evaluations,
+                         num_selected =     num_selected,
+                         num_offspring =    num_offspring,
+                         mutation_rate =    mutation_rate,
+                         num_elites =       num_elites,
+                         simulator =        simulator,
+                         nogui =            nogui,
+                         show_plot_already = False,
+                         seed =             seed,
+                         known_target_values = known_target_values)
+                         
+        print report
+                         
+        plot_baseline_data()
+        
+        eps = 0.01
+        
+        gh = report['fittest vars']['cell:Granule_98/channelDensity:Gran_H_98_all/mS_per_cm2']
+        gpas = report['fittest vars']['cell:Granule_98/channelDensity:GranPassiveCond_all/mS_per_cm2']
+        sc = report['fittest vars']['cell:Granule_98/specificCapacitance:all/uF_per_cm2']
+        
+        min_constraints = [50,   6, gh*(1-eps), gpas*(1-eps), sc*(1-eps)]
+        max_constraints = [60,  15, gh*(1+eps), gpas*(1+eps), sc*(1+eps)]
+        
+        
+        report = run_optimisation(prefix = prefix, 
                          neuroml_file =     neuroml_file,
                          target =           target,
                          parameters =       parameters,
@@ -180,7 +263,9 @@ if __name__ == '__main__':
                          num_elites =       num_elites,
                          simulator =        simulator,
                          nogui =            nogui,
-                         seed =             seed)
+                         show_plot_already = True,
+                         seed =             seed,
+                         known_target_values = known_target_values)
         
     else:
         
