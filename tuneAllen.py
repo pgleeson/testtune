@@ -6,11 +6,14 @@
 
 '''
 
-from pyneuroml.tune.NeuroMLTuner import run_optimisation
+from pyneuroml.tune.NeuroMLTuner import run_optimisation, run_2stage_optimization
+
 from pyneuroml.tune.NeuroMLController import NeuroMLController
 
 import sys
 from collections import OrderedDict
+
+import json
 
 
 parameters = ['cell:RS/channelDensity:Na_all/mS_per_cm2',
@@ -75,7 +78,7 @@ def run_one_optimisation(ref,
                      min_constraints =  min_constraints,
                      weights =          weights,
                      target_data =      target_data,
-                     dt =               0.025,):
+                     dt =               0.025):
                          
     ref = '%s__s%s_p%s_m%s_s%s_o%s_m%s_e%s'%(ref,
                      seed,
@@ -133,6 +136,33 @@ if __name__ == '__main__':
                                  
         t, v = cont.run_individual(sim_vars, show=(not nogui))
         
+    if '-mone' in sys.argv:
+        
+        simulator  = 'jNeuroML_NEURON'
+        #simulator  = 'jNeuroML'
+        
+        cont = NeuroMLController('AllenTest', 
+                                 'models/RS/AllenTestMulti.net.nml',
+                                 'network_RS',
+                                 1500, 
+                                 0.01, 
+                                 simulator)
+                                 
+        example_vars = {'cell:RS/channelDensity:IM_all/mS_per_cm2': 0.298616048828908,
+                        'cell:RS/channelDensity:Kd_all/mS_per_cm2': 10.01185622839693,
+                        'cell:RS/channelDensity:LeakConductance_all/mS_per_cm2': 0.09709819705345717,
+                        'cell:RS/channelDensity:Na_all/mS_per_cm2': 89.52537116523236,
+                        'cell:RS/erev_id:IM_all/mV': -79.75855615087383,
+                        'cell:RS/erev_id:Kd_all/mV': -72.09249355952414,
+                        'cell:RS/erev_id:LeakConductance_all/mV': -77.72370827350683,
+                        'cell:RS/erev_id:Na_all/mV': 51.57661143347139,
+                        'cell:RS/specificCapacitance:all/uF_per_cm2': 0.5217289166700633}
+
+        sim_vars = OrderedDict(example_vars)
+                                
+                                 
+        t, v = cont.run_individual(sim_vars, show=(not nogui))
+        
         
     elif '-izhone' in sys.argv:
         
@@ -181,14 +211,118 @@ if __name__ == '__main__':
 
         run_one_optimisation('AllenTestQ',
                             1234,
-                            population_size =  10,
-                            max_evaluations =  20,
-                            num_selected =     5,
-                            num_offspring =    8,
+                            population_size =  4,
+                            max_evaluations =  8,
+                            num_selected =     2,
+                            num_offspring =    2,
                             mutation_rate =    0.9,
                             num_elites =       1,
                             simulator =        simulator,
                             nogui =            nogui)
+                            
+    elif '-2stage' in sys.argv:
+        
+        print("Running 2 stage optimisation")
+        
+        parameters = ['cell:RS/channelDensity:LeakConductance_all/mS_per_cm2',
+                      'cell:RS/erev_id:LeakConductance_all/mV',
+                      'cell:RS/specificCapacitance:all/uF_per_cm2',
+                      'cell:RS/channelDensity:Na_all/mS_per_cm2',
+                      'cell:RS/channelDensity:Kd_all/mS_per_cm2',
+                      'cell:RS/channelDensity:IM_all/mS_per_cm2',
+                      'cell:RS/erev_id:Na_all/mV',
+                      'cell:RS/erev_id:Kd_all/mV',
+                      'cell:RS/erev_id:IM_all/mV']
+
+
+        max_constraints_1 = [0.1,   -70,  2,   0, 0, 0, 55, -80, -80]
+        min_constraints_1 = [0.001, -100, 0.2, 0, 0, 0, 55, -80, -80]
+        
+        # For a quick test...
+        max_constraints_1 = [0.1,   -77.9, 0.51,   0, 0, 0, 55, -80, -80]
+        min_constraints_1 = [0.09,  -77.8, 0.52,   0, 0, 0, 55, -80, -80]
+        
+        max_constraints_2 = ['x',   'x',   'x',    100,  25,   4,    60, -70,  -70]
+        min_constraints_2 = ['x',   'x',   'x',    20,   1,    1e-6, 50, -100, -100]
+        
+        
+        
+        sweep_numbers = [34,38,42,46,50,54,58]
+        
+         
+        with open("471141261_analysis.json", "r") as json_file:
+            metadata = json.load(json_file)
+
+        ref0 = 'Pop0/0/RS/v:'
+        ref1 = 'Pop0/1/RS/v:'
+        ref5 = 'Pop0/5/RS/v:'
+        ref6 = 'Pop0/6/RS/v:'
+        
+        minimum0 = ref0+'minimum'
+        average_last_1percent0 = ref0+'average_last_1percent'
+        minimum1 = ref1+'minimum'
+        
+
+        weights_1 = {minimum0: 1,
+                     average_last_1percent0: 1,
+                     minimum1: 1}
+
+        sw0 = "%s"%sweep_numbers[0]
+        sw1 = "%s"%sweep_numbers[1]
+        sw5 = "%s"%sweep_numbers[5]
+        sw6 = "%s"%sweep_numbers[6]
+        
+        target_data_1 = {minimum0:               metadata['sweeps'][sw0]["pyelectro_iclamp_analysis"][sw0+":minimum"],
+                         average_last_1percent0: metadata['sweeps'][sw0]["pyelectro_iclamp_analysis"][sw0+":average_last_1percent"],
+                         minimum1:               metadata['sweeps'][sw1]["pyelectro_iclamp_analysis"][sw1+":minimum"]}
+                   
+        average_maximum6 = ref6+'average_maximum'
+        average_minimum6 = ref6+'average_minimum'
+        mean_spike_frequency6 = ref6+'mean_spike_frequency'
+        mean_spike_frequency5 = ref5+'mean_spike_frequency'
+        
+        weights_2 = {average_maximum6: 1,
+                   average_minimum6: 1,
+                   mean_spike_frequency6: 1,
+                   mean_spike_frequency5: 1}
+                   
+        target_data_2 = {average_maximum6:      metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":average_maximum"],
+                         average_minimum6:      metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":average_maximum"],
+                         mean_spike_frequency6: metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":mean_spike_frequency"],
+                         mean_spike_frequency5: metadata['sweeps'][sw5]["pyelectro_iclamp_analysis"][sw5+":mean_spike_frequency"]} 
+        
+        
+        run_2stage_optimization('Allen2stage',
+                                neuroml_file =     'models/RS/AllenTestMulti.net.nml',
+                                target =           'network_RS',
+                                parameters = parameters,
+                                max_constraints_1 = max_constraints_1,
+                                max_constraints_2 = max_constraints_2,
+                                min_constraints_1 = min_constraints_1,
+                                min_constraints_2 = min_constraints_2,
+                                delta_constraints = 0.01,
+                                weights_1 = weights_1,
+                                weights_2 = weights_2,
+                                target_data_1 = target_data_1,
+                                target_data_2 = target_data_2,
+                                sim_time = 1500,
+                                dt = 0.025,
+                                population_size_1 = 2,
+                                population_size_2 = 20,
+                                max_evaluations_1 = 4,
+                                max_evaluations_2 = 40,
+                                num_selected_1 = 2,
+                                num_selected_2 = 10,
+                                num_offspring_1 = 2,
+                                num_offspring_2 = 8,
+                                mutation_rate = 0.1,
+                                num_elites = 1,
+                                simulator = simulator,
+                                nogui = nogui,
+                                show_plot_already = True,
+                                seed = 1234,
+                                known_target_values = {},
+                                dry_run = False)
 
     else:
         
