@@ -239,8 +239,8 @@ if __name__ == '__main__':
         min_constraints_1 = [0.001, -100, 0.2, 0, 0, 0, 55, -80, -80]
         
         # For a quick test...
-        max_constraints_1 = [0.1,   -77.9, 0.51,   0, 0, 0, 55, -80, -80]
-        min_constraints_1 = [0.09,  -77.8, 0.52,   0, 0, 0, 55, -80, -80]
+        # max_constraints_1 = [0.1,   -77.9, 0.51,   0, 0, 0, 55, -80, -80]
+        # min_constraints_1 = [0.09,  -77.8, 0.52,   0, 0, 0, 55, -80, -80]
         
         max_constraints_2 = ['x',   'x',   'x',    100,  25,   4,    60, -70,  -70]
         min_constraints_2 = ['x',   'x',   'x',    20,   1,    1e-6, 50, -100, -100]
@@ -287,7 +287,7 @@ if __name__ == '__main__':
                    mean_spike_frequency5: 1}
                    
         target_data_2 = {average_maximum6:      metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":average_maximum"],
-                         average_minimum6:      metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":average_maximum"],
+                         average_minimum6:      metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":average_minimum"],
                          mean_spike_frequency6: metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":mean_spike_frequency"],
                          mean_spike_frequency5: metadata['sweeps'][sw5]["pyelectro_iclamp_analysis"][sw5+":mean_spike_frequency"]} 
         
@@ -307,16 +307,16 @@ if __name__ == '__main__':
                                 target_data_2 = target_data_2,
                                 sim_time = 1500,
                                 dt = 0.025,
-                                population_size_1 = 2,
-                                population_size_2 = 20,
-                                max_evaluations_1 = 4,
-                                max_evaluations_2 = 40,
-                                num_selected_1 = 2,
-                                num_selected_2 = 10,
-                                num_offspring_1 = 2,
-                                num_offspring_2 = 8,
+                                population_size_1 = 50,
+                                population_size_2 = 100,
+                                max_evaluations_1 = 200,
+                                max_evaluations_2 = 500,
+                                num_selected_1 = 20,
+                                num_selected_2 = 20,
+                                num_offspring_1 = 15,
+                                num_offspring_2 = 15,
                                 mutation_rate = 0.1,
-                                num_elites = 1,
+                                num_elites = 2,
                                 simulator = simulator,
                                 nogui = nogui,
                                 show_plot_already = True,
