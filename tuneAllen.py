@@ -331,34 +331,57 @@ if __name__ == '__main__':
         compare('%s/%s.Pop0.v.dat'%(report['run_directory'], report['reference']))
 
 
-    elif '-izhquick' in sys.argv:
 
+    elif '-izh2stage' in sys.argv:
+
+        print("Running 2 stage optimisation")
         simulator  = 'jNeuroML_NEURON'
 
-        scale1 = 0.1
-
-        report = run_one_optimisation('AllenIzh',
-                            12345,
-                            population_size =  scale(scale1,100),
-                            max_evaluations =  scale(scale1,500),
-                            num_selected =     scale(scale1,30),
-                            num_offspring =    scale(scale1,30),
-                            mutation_rate =    0.1,
-                            num_elites =       2,
-                            simulator =        simulator,
-                            nogui =            nogui,
-                            dt =               0.05,
-                            neuroml_file =     'models/RS/AllenIzh.net.nml',
-                            target =           'network_RS',
-                            parameters =       parameters_iz,
-                            max_constraints =  max_constraints_iz,
-                            min_constraints =  min_constraints_iz)
-
-        compare('%s/%s.Pop0.v.dat'%(report['run_directory'], report['reference']))
+        #                     a,   b,  c,  d,   C,    vr,  vt, vpeak, k
+        min_constraints_1 = [0.1, 1, -50, 300,  30,  -90, -30, 30,   0]
+        max_constraints_1 = [0.1, 1, -50, 300, 300,  -70, -30, 30,   1]
 
 
+        #                     a,     b,  c,  d,   C,    vr,  vt, vpeak, k
+        min_constraints_2 = [0.01, -5, -65, 10,  'x',  'x', -60, 0,   'x']
+        max_constraints_2 = [0.2,  20, -10, 400, 'x',  'x',  50, 70,  'x']
 
+        scale1 = 0.3
+        scale2 = 0.05
 
+        r1, r2 = run_2stage_optimization('AllenIzh2stage',
+                                neuroml_file =     'models/RS/AllenIzhMulti.net.nml',
+                                target =           'network_RS',
+                                parameters = parameters_iz,
+                                max_constraints_1 = max_constraints_1,
+                                max_constraints_2 = max_constraints_2,
+                                min_constraints_1 = min_constraints_1,
+                                min_constraints_2 = min_constraints_2,
+                                delta_constraints = 0.01,
+                                weights_1 = weights_1,
+                                weights_2 = weights_2,
+                                target_data_1 = target_data_1,
+                                target_data_2 = target_data_2,
+                                sim_time = 1500,
+                                dt = 0.05,
+                                population_size_1 = scale(scale1,50,10),
+                                population_size_2 = scale(scale2,100,10),
+                                max_evaluations_1 = scale(scale1,200,20),
+                                max_evaluations_2 = scale(scale2,500,10),
+                                num_selected_1 = scale(scale1,30,5),
+                                num_selected_2 = scale(scale2,30,5),
+                                num_offspring_1 = scale(scale1,20,5),
+                                num_offspring_2 = scale(scale2,20,5),
+                                mutation_rate = 0.1,
+                                num_elites = 2,
+                                simulator = simulator,
+                                nogui = nogui,
+                                show_plot_already = True,
+                                seed = 1234,
+                                known_target_values = {},
+                                dry_run = False)
+                                
+        compare('%s/%s.Pop0.v.dat'%(r1['run_directory'], r1['reference']))
 
 
     elif '-quick' in sys.argv:

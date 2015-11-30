@@ -8,13 +8,13 @@
                             vr = "-80 mV" vt = "-40 mV" vpeak = "35 mV" 
                             a = "0.03 per_ms" b = "-2 nS" c = "-50 mV" d = "100 pA"/>
 
-    <pulseGenerator id="inp0" delay="200.0ms" duration="1000.0ms" amplitude="-110pA"/>
-    <pulseGenerator id="inp1" delay="200.0ms" duration="1000.0ms" amplitude="-30pA"/>
-    <pulseGenerator id="inp2" delay="200.0ms" duration="1000.0ms" amplitude="50pA"/>
-    <pulseGenerator id="inp3" delay="200.0ms" duration="1000.0ms" amplitude="130pA"/>
-    <pulseGenerator id="inp4" delay="200.0ms" duration="1000.0ms" amplitude="210pA"/>
-    <pulseGenerator id="inp5" delay="200.0ms" duration="1000.0ms" amplitude="290pA"/>
-    <pulseGenerator id="inp6" delay="200.0ms" duration="1000.0ms" amplitude="370pA"/>
+    <pulseGenerator id="inp0" delay="270.0ms" duration="1000.0ms" amplitude="-110pA"/>
+    <pulseGenerator id="inp1" delay="270.0ms" duration="1000.0ms" amplitude="-30pA"/>
+    <pulseGenerator id="inp2" delay="270.0ms" duration="1000.0ms" amplitude="50pA"/>
+    <pulseGenerator id="inp3" delay="270.0ms" duration="1000.0ms" amplitude="130pA"/>
+    <pulseGenerator id="inp4" delay="270.0ms" duration="1000.0ms" amplitude="210pA"/>
+    <pulseGenerator id="inp5" delay="270.0ms" duration="1000.0ms" amplitude="290pA"/>
+    <pulseGenerator id="inp6" delay="270.0ms" duration="1000.0ms" amplitude="370pA"/>
 
     
     <network id="network_RS" type="networkWithTemperature" temperature="32.0 degC">
