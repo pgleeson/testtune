@@ -66,15 +66,15 @@ parameters_iz = ['izhikevich2007Cell:RS/a/per_ms',
 min_constraints_iz = [0.01, -5, -65, 10,  30,  -90, -60, 0,    0.1]
 max_constraints_iz = [0.2,  20, -10, 400, 300, -70,  50, 70,   1]
 
-example_vars_iz = {'izhikevich2007Cell:RS/C/pF': 100.84207059941474,
-                   'izhikevich2007Cell:RS/a/per_ms': 0.07024431678263603,
-                   'izhikevich2007Cell:RS/b/nS': 5.357139582920935,
-                   'izhikevich2007Cell:RS/c/mV': -34.783119779481055,
-                   'izhikevich2007Cell:RS/d/pA': 370.2815401185289,
-                   'izhikevich2007Cell:RS/k/nS_per_mV': 0.221364083728559,
-                   'izhikevich2007Cell:RS/vpeak/mV': 31.507623499244847,
-                   'izhikevich2007Cell:RS/vr/mV': -79.71909885787866,
-                   'izhikevich2007Cell:RS/vt/mV': -50.357398197869315}
+example_vars_iz = {'izhikevich2007Cell:RS/C/pF': 111.33748971008993,
+                   'izhikevich2007Cell:RS/a/per_ms': 0.10086082613802837,
+                   'izhikevich2007Cell:RS/b/nS': 4.216394247179424,
+                   'izhikevich2007Cell:RS/c/mV': -39.3834056585552,
+                   'izhikevich2007Cell:RS/d/pA': 286.52781871556306,
+                   'izhikevich2007Cell:RS/k/nS_per_mV': 0.22523540069127246,
+                   'izhikevich2007Cell:RS/vpeak/mV': 31.748338981982727,
+                   'izhikevich2007Cell:RS/vr/mV': -78.53226001409912,
+                   'izhikevich2007Cell:RS/vt/mV': -38.35112381347568}
 
 
 
@@ -86,26 +86,40 @@ with open("471141261_analysis.json", "r") as json_file:
 
 ref0 = 'Pop0/0/RS/v:'
 ref1 = 'Pop0/1/RS/v:'
+ref2 = 'Pop0/2/RS/v:'
+ref3 = 'Pop0/3/RS/v:'
 ref5 = 'Pop0/5/RS/v:'
 ref6 = 'Pop0/6/RS/v:'
 
 minimum0 = ref0+'minimum'
 average_last_1percent0 = ref0+'average_last_1percent'
+ref0_280 = ref0+'value_280'
 minimum1 = ref1+'minimum'
+ref2_1000 = ref2+'value_1000'
+ref3_1000 = ref3+'value_1000'
 
 
 weights_1 = {minimum0: 1,
              average_last_1percent0: 1,
-             minimum1: 1}
+             ref0_280: 1,
+             minimum1: 1,
+             ref2_1000: 1,
+             ref3_1000: 1}
 
 sw0 = "%s"%sweep_numbers[0]
 sw1 = "%s"%sweep_numbers[1]
+sw2 = "%s"%sweep_numbers[2]
+sw3 = "%s"%sweep_numbers[3]
+sw4 = "%s"%sweep_numbers[4]
 sw5 = "%s"%sweep_numbers[5]
 sw6 = "%s"%sweep_numbers[6]
 
 target_data_1 = {minimum0:               metadata['sweeps'][sw0]["pyelectro_iclamp_analysis"][sw0+":minimum"],
                  average_last_1percent0: metadata['sweeps'][sw0]["pyelectro_iclamp_analysis"][sw0+":average_last_1percent"],
-                 minimum1:               metadata['sweeps'][sw1]["pyelectro_iclamp_analysis"][sw1+":minimum"]}
+                 ref0_280:               metadata['sweeps'][sw0]["pyelectro_iclamp_analysis"][sw0+":value_280"],
+                 minimum1:               metadata['sweeps'][sw1]["pyelectro_iclamp_analysis"][sw1+":minimum"],
+                 ref2_1000:              metadata['sweeps'][sw2]["pyelectro_iclamp_analysis"][sw2+":value_1000"],
+                 ref3_1000:              metadata['sweeps'][sw3]["pyelectro_iclamp_analysis"][sw3+":value_1000"]}
 
 average_maximum6 = ref6+'average_maximum'
 average_minimum6 = ref6+'average_minimum'
@@ -118,7 +132,7 @@ weights_2 = {average_maximum6: 1,
            mean_spike_frequency5: 1}
            
 for w in weights_1.keys():
-    weights_2[w] = weights_1[w]*0.1
+    weights_2[w] = weights_1[w]*0.5
 
 target_data_2 = {average_maximum6:      metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":average_maximum"],
                  average_minimum6:      metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":average_minimum"],
@@ -345,7 +359,7 @@ if __name__ == '__main__':
         simulator  = 'jNeuroML_NEURON'
 
         #                     a,   b,  c,  d,   C,    vr,  vt, vpeak, k
-        min_constraints_1 = [0.1, 1, -50, 300,  30,  -90, -30, 30,   0]
+        min_constraints_1 = [0.1, 1, -50, 300,  30,  -90, -30, 30,   0.01]
         max_constraints_1 = [0.1, 1, -50, 300, 300,  -70, -30, 30,   1]
 
 
@@ -353,8 +367,8 @@ if __name__ == '__main__':
         min_constraints_2 = [0.01, -5, -65, 10,  'x',  'x', -60, 0,   'x']
         max_constraints_2 = [0.2,  20, -10, 400, 'x',  'x',  50, 70,  'x']
 
-        scale1 = .2
-        scale2 = .2
+        scale1 = 1.5
+        scale2 = 1
 
         r1, r2 = run_2stage_optimization('AllenIzh2stage',
                                 neuroml_file =     'models/RS/AllenIzhMulti.net.nml',
@@ -389,6 +403,7 @@ if __name__ == '__main__':
                                 dry_run = False)
                                 
         compare('%s/%s.Pop0.v.dat'%(r1['run_directory'], r1['reference']))
+        compare('%s/%s.Pop0.v.dat'%(r2['run_directory'], r2['reference']))
 
 
     elif '-quick' in sys.argv:
