@@ -66,15 +66,15 @@ parameters_iz = ['izhikevich2007Cell:RS/a/per_ms',
 min_constraints_iz = [0.01, -5, -65, 10,  30,  -90, -60, 0,    0.1]
 max_constraints_iz = [0.2,  20, -10, 400, 300, -70,  50, 70,   1]
 
-example_vars_iz = {'izhikevich2007Cell:RS/C/pF': 157.3674812918236,
-                'izhikevich2007Cell:RS/a/per_ms': 0.09303530809766278,
-                'izhikevich2007Cell:RS/b/nS': 1.0177979838287232,
-                'izhikevich2007Cell:RS/c/mV': -48.063788481504965,
-                'izhikevich2007Cell:RS/d/pA': 345.5017511454606,
-                'izhikevich2007Cell:RS/k/nS_per_mV': 0.11978069117890949,
-                'izhikevich2007Cell:RS/vpeak/mV': 36.429955149569174,
-                'izhikevich2007Cell:RS/vr/mV': -76.17888228360782,
-                'izhikevich2007Cell:RS/vt/mV': -35.93520240084242}
+example_vars_iz = {'izhikevich2007Cell:RS/C/pF': 100.84207059941474,
+                   'izhikevich2007Cell:RS/a/per_ms': 0.07024431678263603,
+                   'izhikevich2007Cell:RS/b/nS': 5.357139582920935,
+                   'izhikevich2007Cell:RS/c/mV': -34.783119779481055,
+                   'izhikevich2007Cell:RS/d/pA': 370.2815401185289,
+                   'izhikevich2007Cell:RS/k/nS_per_mV': 0.221364083728559,
+                   'izhikevich2007Cell:RS/vpeak/mV': 31.507623499244847,
+                   'izhikevich2007Cell:RS/vr/mV': -79.71909885787866,
+                   'izhikevich2007Cell:RS/vt/mV': -50.357398197869315}
 
 
 
@@ -116,12 +116,19 @@ weights_2 = {average_maximum6: 1,
            average_minimum6: 1,
            mean_spike_frequency6: 1,
            mean_spike_frequency5: 1}
+           
+for w in weights_1.keys():
+    weights_2[w] = weights_1[w]*0.1
 
 target_data_2 = {average_maximum6:      metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":average_maximum"],
                  average_minimum6:      metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":average_minimum"],
                  mean_spike_frequency6: metadata['sweeps'][sw6]["pyelectro_iclamp_analysis"][sw6+":mean_spike_frequency"],
                  mean_spike_frequency5: metadata['sweeps'][sw5]["pyelectro_iclamp_analysis"][sw5+":mean_spike_frequency"]} 
 
+for td in target_data_1.keys():
+    target_data_2[td] = target_data_1[td]
+    
+    
 def run_one_optimisation(ref,
                      seed,
                      population_size,
@@ -346,8 +353,8 @@ if __name__ == '__main__':
         min_constraints_2 = [0.01, -5, -65, 10,  'x',  'x', -60, 0,   'x']
         max_constraints_2 = [0.2,  20, -10, 400, 'x',  'x',  50, 70,  'x']
 
-        scale1 = 0.3
-        scale2 = 0.05
+        scale1 = .2
+        scale2 = .2
 
         r1, r2 = run_2stage_optimization('AllenIzh2stage',
                                 neuroml_file =     'models/RS/AllenIzhMulti.net.nml',
