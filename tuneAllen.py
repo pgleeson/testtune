@@ -75,8 +75,8 @@ example_vars_iz = {'izhikevich2007Cell:RS/C/pF': 157.3674812918236,
                 'izhikevich2007Cell:RS/vpeak/mV': 36.429955149569174,
                 'izhikevich2007Cell:RS/vr/mV': -76.17888228360782,
                 'izhikevich2007Cell:RS/vt/mV': -35.93520240084242}
-                
-                        
+
+
 
 sweep_numbers = [34,38,42,46,50,54,58]
 
@@ -140,7 +140,7 @@ def run_one_optimisation(ref,
                      weights =          weights,
                      target_data =      target_data,
                      dt =               0.025):
-                         
+
     ref = '%s__s%s_p%s_m%s_s%s_o%s_m%s_e%s'%(ref,
                      seed,
                      population_size,
@@ -169,18 +169,18 @@ def run_one_optimisation(ref,
                      num_elites =       num_elites,
                      simulator =        simulator,
                      nogui =            nogui)
-                     
+
 def scale(scale, number, min=1):
     return max(min, int(scale*number))
 
 def reload_standard_dat_file(file_name):
-    
+
     dat_file = open(file_name)
     data = {}
     indeces = []
     for line in dat_file:
         words = line.split()
-        
+
         if not data.has_key('t'):
             data['t'] = []
             for i in range(len(words)-1):
@@ -189,47 +189,47 @@ def reload_standard_dat_file(file_name):
         data['t'].append(float(words[0]))
         for i in range(len(words)-1):
             data[i].append(float(words[i+1]))
-            
+
     print("Loaded data from %s, %s"%(file_name, indeces))
-    
+
     return data, indeces
-    
+
 def compare(sim_data_file):
     dat_file_name = '../AllenInstituteNeuroML/CellTypesDatabase/data/471141261.dat'
-    
+
     data, indeces = reload_standard_dat_file(dat_file_name)
-    
+
     for ii in indeces:
         plt.plot(data['t'],data[ii], color='grey')
-        
+
     data, indeces = reload_standard_dat_file(sim_data_file)
-    
+
     for ii in indeces:
         plt.plot(data['t'],data[ii])
-        
+
     plt.show()
-            
+
 
 if __name__ == '__main__':
-    
+
     nogui = '-nogui' in sys.argv
-    
+
     if '-compare' in sys.argv:
-        
+
         compare('NT_AllenIzh__s12345_p200_m600_s80_o60_m0.1_e2_Mon_Nov_30_12.30.28_2015/AllenIzh__s12345_p200_m600_s80_o60_m0.1_e2.Pop0.v.dat')
-        
+
     elif '-one' in sys.argv:
-        
+
         simulator  = 'jNeuroML_NEURON'
         #simulator  = 'jNeuroML'
-        
+
         cont = NeuroMLController('AllenTest', 
                                  'models/RS/AllenTest.net.nml',
                                  'network_RS',
                                  1500, 
                                  0.01, 
                                  simulator)
-                                 
+
         example_vars = {'cell:RS/channelDensity:IM_all/mS_per_cm2': 0.7724432400416816,
                             'cell:RS/channelDensity:Kd_all/mS_per_cm2': 4.643108211145454,
                             'cell:RS/channelDensity:LeakConductance_all/mS_per_cm2': 0.007883588106567089,
@@ -237,22 +237,22 @@ if __name__ == '__main__':
                             'cell:RS/erev_id:LeakConductance_all/mV': -95.25485559729064}
 
         sim_vars = OrderedDict(example_vars)
-                                
-                                 
+
+
         t, v = cont.run_individual(sim_vars, show=(not nogui))
-        
+
     elif '-mone' in sys.argv:
-        
+
         simulator  = 'jNeuroML_NEURON'
         #simulator  = 'jNeuroML'
-        
+
         cont = NeuroMLController('AllenTest', 
                                  'models/RS/AllenTestMulti.net.nml',
                                  'network_RS',
                                  1500, 
                                  0.01, 
                                  simulator)
-                                 
+
         example_vars = {'cell:RS/channelDensity:IM_all/mS_per_cm2': 0.298616048828908,
                         'cell:RS/channelDensity:Kd_all/mS_per_cm2': 10.01185622839693,
                         'cell:RS/channelDensity:LeakConductance_all/mS_per_cm2': 0.09709819705345717,
@@ -264,34 +264,34 @@ if __name__ == '__main__':
                         'cell:RS/specificCapacitance:all/uF_per_cm2': 0.5217289166700633}
 
         sim_vars = OrderedDict(example_vars)
-                                
-                                 
+
+
         t, v = cont.run_individual(sim_vars, show=(not nogui))
-        
-        
+
+
     elif '-izhone' in sys.argv:
-        
+
         simulator  = 'jNeuroML'
         simulator  = 'jNeuroML_NEURON'
-        
+
         cont = NeuroMLController('AllenIzhTest', 
                                  'models/RS/AllenIzh.net.nml',
                                  'network_RS',
                                  1500, 
                                  0.05, 
                                  simulator)
-                                 
+
 
         sim_vars = OrderedDict(example_vars_iz)
-                                
+
         t, v = cont.run_individual(sim_vars, show=(not nogui))
-        
-        
+
+
     elif '-izhmone' in sys.argv:
-        
+
         simulator  = 'jNeuroML'
         simulator  = 'jNeuroML_NEURON'
-        
+
         cont = NeuroMLController('AllenIzhMulti', 
                                  'models/RS/AllenIzhMulti.net.nml',
                                  'network_RS',
@@ -300,17 +300,17 @@ if __name__ == '__main__':
                                  simulator)
 
         sim_vars = OrderedDict(example_vars_iz)
-                                
+
         t, v = cont.run_individual(sim_vars, show=(not nogui))
-        
-        
-        
+
+
+
     elif '-izhquick' in sys.argv:
-        
+
         simulator  = 'jNeuroML_NEURON'
-        
+
         scale1 = 0.1
-        
+
         report = run_one_optimisation('AllenIzh',
                             12345,
                             population_size =  scale(scale1,100),
@@ -327,16 +327,16 @@ if __name__ == '__main__':
                             parameters =       parameters_iz,
                             max_constraints =  max_constraints_iz,
                             min_constraints =  min_constraints_iz)
-        
+
         compare('%s/%s.Pop0.v.dat'%(report['run_directory'], report['reference']))
-        
-        
+
+
     elif '-izhquick' in sys.argv:
-        
+
         simulator  = 'jNeuroML_NEURON'
-        
+
         scale1 = 0.1
-        
+
         report = run_one_optimisation('AllenIzh',
                             12345,
                             population_size =  scale(scale1,100),
@@ -353,14 +353,14 @@ if __name__ == '__main__':
                             parameters =       parameters_iz,
                             max_constraints =  max_constraints_iz,
                             min_constraints =  min_constraints_iz)
-        
+
         compare('%s/%s.Pop0.v.dat'%(report['run_directory'], report['reference']))
-        
-        
-        
-        
-    
-        
+
+
+
+
+
+
     elif '-quick' in sys.argv:
 
         run_one_optimisation('AllenTestQ',
@@ -373,11 +373,11 @@ if __name__ == '__main__':
                             num_elites =       1,
                             simulator =        simulator,
                             nogui =            nogui)
-                            
+
     elif '-2stage' in sys.argv:
-        
+
         print("Running 2 stage optimisation")
-        
+
         parameters = ['cell:RS/channelDensity:LeakConductance_all/mS_per_cm2',
                       'cell:RS/erev_id:LeakConductance_all/mV',
                       'cell:RS/specificCapacitance:all/uF_per_cm2',
@@ -391,19 +391,19 @@ if __name__ == '__main__':
 
         max_constraints_1 = [0.1,   -70,  2,   0, 0, 0, 55, -80, -80]
         min_constraints_1 = [0.001, -100, 0.2, 0, 0, 0, 55, -80, -80]
-        
+
         # For a quick test...
         # max_constraints_1 = [0.1,   -77.9, 0.51,   0, 0, 0, 55, -80, -80]
         # min_constraints_1 = [0.09,  -77.8, 0.52,   0, 0, 0, 55, -80, -80]
-        
+
         max_constraints_2 = ['x',   'x',   'x',    100,  25,   4,    60, -70,  -70]
         min_constraints_2 = ['x',   'x',   'x',    20,   1,    1e-6, 50, -100, -100]
-        
 
-        
+
+
         scale1 = 0.1
         scale2 = 0.05
-        
+
         run_2stage_optimization('Allen2stage',
                                 neuroml_file =     'models/RS/AllenTestMulti.net.nml',
                                 target =           'network_RS',
@@ -437,7 +437,7 @@ if __name__ == '__main__':
                                 dry_run = False)
 
     else:
-        
+
         run_one_optimisation('AllenTest',
                             1234,
                             population_size =  20,
@@ -448,6 +448,6 @@ if __name__ == '__main__':
                             num_elites =       1,
                             simulator =        simulator,
                             nogui =            nogui)
-        
+
 
 
