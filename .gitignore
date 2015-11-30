@@ -20,3 +20,5 @@ NT_*
 *.mod
 *.hoc
 *.pyc
+/AllenIzhMulti.net.nml
+/LEMS_AllenIzhMulti.xml
