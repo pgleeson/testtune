@@ -170,8 +170,8 @@ def run_one_optimisation(ref,
                      simulator =        simulator,
                      nogui =            nogui)
                      
-def scale(scale, number):
-    return max(1, int(scale*number))
+def scale(scale, number, min=1):
+    return max(min, int(scale*number))
 
 def reload_standard_dat_file(file_name):
     
@@ -331,6 +331,32 @@ if __name__ == '__main__':
         compare('%s/%s.Pop0.v.dat'%(report['run_directory'], report['reference']))
         
         
+    elif '-izhquick' in sys.argv:
+        
+        simulator  = 'jNeuroML_NEURON'
+        
+        scale1 = 0.1
+        
+        report = run_one_optimisation('AllenIzh',
+                            12345,
+                            population_size =  scale(scale1,100),
+                            max_evaluations =  scale(scale1,500),
+                            num_selected =     scale(scale1,30),
+                            num_offspring =    scale(scale1,30),
+                            mutation_rate =    0.1,
+                            num_elites =       2,
+                            simulator =        simulator,
+                            nogui =            nogui,
+                            dt =               0.05,
+                            neuroml_file =     'models/RS/AllenIzh.net.nml',
+                            target =           'network_RS',
+                            parameters =       parameters_iz,
+                            max_constraints =  max_constraints_iz,
+                            min_constraints =  min_constraints_iz)
+        
+        compare('%s/%s.Pop0.v.dat'%(report['run_directory'], report['reference']))
+        
+        
         
         
     
@@ -393,14 +419,14 @@ if __name__ == '__main__':
                                 target_data_2 = target_data_2,
                                 sim_time = 1500,
                                 dt = 0.025,
-                                population_size_1 = scale(scale1,50),
-                                population_size_2 = scale(scale2,100),
-                                max_evaluations_1 = scale(scale1,200),
-                                max_evaluations_2 = scale(scale2,500),
-                                num_selected_1 = scale(scale1,30),
-                                num_selected_2 = scale(scale2,30),
-                                num_offspring_1 = scale(scale1,20),
-                                num_offspring_2 = scale(scale2,20),
+                                population_size_1 = scale(scale1,50,10),
+                                population_size_2 = scale(scale2,100,10),
+                                max_evaluations_1 = scale(scale1,200,20),
+                                max_evaluations_2 = scale(scale2,500,10),
+                                num_selected_1 = scale(scale1,30,5),
+                                num_selected_2 = scale(scale2,30,5),
+                                num_offspring_1 = scale(scale1,20,5),
+                                num_offspring_2 = scale(scale2,20,5),
                                 mutation_rate = 0.1,
                                 num_elites = 2,
                                 simulator = simulator,
