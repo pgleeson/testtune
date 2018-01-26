@@ -204,6 +204,10 @@ Parameters and setting used to generate this network:
                 <proximal x="0.000000e+00" y="1.000000e+01" z="0.000000e+00" diameter="5"/>
                 <distal x="0.000000e+00" y="2.000000e+01" z="0.000000e+00" diameter="5"/>
             </segment>
+            <segmentGroup id="all">
+                <member segment="0"/>
+                <member segment="1"/>
+            </segmentGroup>
         </morphology>
         <biophysicalProperties id="biophys_GenericMuscleCell">
             <membraneProperties>
